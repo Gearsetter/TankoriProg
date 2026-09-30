@@ -1,5 +1,23 @@
 #include <stdio.h>
 
+
+// Átlagszámító függvény (4. Feladat)
+double get_dist_avg(double d[], int d_size) {
+    double dist_sum = 0;
+    for(int i=0; i<d_size; i++){
+        dist_sum += d[i];
+    }
+    return dist_sum / d_size;
+}
+
+// Méréseket feldolgozó függvény (4. Feladat)
+void process_measurements(double m[], int m_size, double d[], int d_size) {
+    for(int i=0; i<m_size; i++){
+        d[i%d_size] = m[i];
+        printf("Average of distances: %f\n", get_dist_avg(d, d_size));
+    }
+}
+
 int main() {
     // Hello World (1. Feladat)
     printf("Hello World!\n");
@@ -12,20 +30,8 @@ int main() {
     double distances[4] = {0.0, 0.0, 0.0, 0.0};
     int dist_size = 4;
     
-    // Beérkező mérések eltárolása (3. Feladat)
-    for(int i=0; i<meas_size; i++){
-        distances[i%dist_size] = measurements[i];
-
-        // Átlagszámítás (2. Feladat)
-        double dist_sum = 0;
-        for(int i=0; i<dist_size; i++){
-            dist_sum += distances[i];
-        }
-        double dist_avg = dist_sum / dist_size;
-        printf("Average of distances: %f\n", dist_avg);
-        // Átlagszámítás vége
-
-    }
+    // Beérkező mérések feldolgozása, átlagszámítással (4. Feladat)
+    process_measurements(measurements, meas_size, distances, dist_size);
 
 
     // Loopban várakozás a program végén (1. Feladat)

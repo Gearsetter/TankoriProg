@@ -91,3 +91,32 @@ Amí nem másoltunk át 4 elemet, az áltagszámításnak csak akkor van értelm
 2. Adjunk új, csupa 0.0 kezdeti értéket a *distances* tömb összes elemének.
 3. Buildeljünk!
 4. Teszteljük a frissített programot, az átlagszámítás 6 eredményt kell hogy kiírjon sorban összesen a terminal ablakba.
+
+## **4. Függvényekbe szervezés**
+
+**Használandó új nyelvi elemek:** függvény
+**függvény:** a neve révén kódmemória címmel rendelkező komplex nyelvi elem, amelynek törzsén belül deklarált nyelvi elemek alapvetően lokálisak, kívülről azok nem elérhetők, és a függvény visszatérésekor (függvény vége) megszűnnek létezni. A függvény a külvilágból a bemeneti listáján (akár több bemenet) keresztül jut információhoz, és a műveletei után új információt a visszatérési értékén keresztül közölhet a külvilággal (ami 1 vagy 0 darab (void típusú) lehet), esetleg legfeljebb globális változókat módosíthat, amelyekhez hozzáfér. A függvény segít átláthatóbbá, strukturáltabbá tenni a programot, redukálhatók vele az ismétlődő kódrészletek, bárhányszor újrafelhasználható, függvények egymásból is hívhatók. A függvény befejezését a törzsén belüli return kulcsszó jelöli, mely után a visszatérési értéket kell illesztenünk (pl. *main* esetén a *return 0;* ilyen volt).
+Pl. **int myfunc(int x) { return 2*x; }** függvény visszatérési típusa int, neve myfunc, bemenetként egy x egész számot adunk be (x elnevezés csak egy sablon a függvény belsejének, amikor átadjuk x-ként az értéket, az csak átmásolódik egy, a függvényben lokális x változóba.)
+Amikor ezt a függvényt meghívom, pl. **int result = myfunc(3);** módon, akkor a *result* változó értéke 6 lesz.
+
+## 4.1. Átlagszámítás függvénybe szervezése
+
+A main függvényt, az átláthatóság miatt, nem szokás ennyire zsúfoltan tartani, illik letisztultabbá alakítani. Ráadásul a példánk csak egy teszprogram, a lényeg, hogy a számítási feladatokat újra fel akarjuk majd használni később is. Ennek érdekében függvényként szeretnénk használni a műveleteinket.
+Talán a legszembetűnőbb programrész, amely révén javíthatjuk a modularitást, az az átlagszámítás rész. Ezt fogjuk elsőként függvénnyé alakítani.
+
+1. Hozzunk létre a *test.c* fileban (a main függvényen kívül, a min fölé) egy *get_dist_avg* függvényt, amelynek bemenetei a *distances* tömb és annak mérete, visszatérési értéke pedig a kiszámolt átlag, tehát típusa double.
+2. A függvény törzsébe helyezzük át az átlagszámítás műveleteket, az eredmény printf kiírása nélkül.
+3. Az áthelyezett műveletek helyén hívjuk meg az újonnan implementált függvényünket, és a *dist_avg* változónk legyen a függvény eredménye.
+4. Buildeljünk, teszteljünk!
+5. Figyeljük meg, hogy a tömb átadásakor csak a tömb nevét, tehát kezdőcímét tudjuk átadni, ezért is van szükségünk egyúttal a tömb előre ismert méretét is átadni a függvénynek, mint információ, hogy tudja, meddig kell iterálnia. A függvény definíciójában a **double d[]** jelöli, hogy itt double típusra mutató címet várunk. (Később tanuljuk, hogy ez ugyanaz, mintha **double\* d** jelölést használtunk volna.)
+6. Futtassuk a programot debug módban is, és helyezzünk breakpointot a függvénytörzs belsejébe. Figyeljük meg, hogy a függvényen belüli lokális változók megszűnnek, amint a függvényből visszatérünk.
+
+## 4.2 Távolságmérések feldolgozásának függvénybe helyezése
+
+Helyezzük a távolságmérések másolását, feldolgozását is egy függvénybe! Észrevehetjük, hogy ekkor az átlagszámító függvényünk bekerülaz új függvény belsejébe, ami egyáltalán nem baj, nap mint nap fogunk még látni hasonlót, ettől lesz moduláris a programunk.
+
+1. Hozzunk létre egy *process_measurements* függvényt a *test.c* fileban, melynek 4 bemenete lesz: a kívülről kapott *measurements* tömb és annak mérete, valamint a *distances* tömb, amit fel kell tölteni és annak mérete. Mivel az eredmények közlése a függvény belsejében az átlagok printf kiírásával történik, ezért nincs szükségünk visszatérési értékre, így annak típusa *void* (ilyenkor nem vagyunk kötelesek használni a return sort, de a függvénytörzs vége előtt vissza szeretnénk térni a **return;** szintaxis használatos).
+2. Fontos, hogy a függvény implementációját az álagszámító függvény és a main közé helyezzük, mert a fordítás szekvenciális, és különben nem ismerné fel a *get_avg* függvényt, mert nem létezett sorban előtte. (Ugyanezért van a main függvény legalul.)
+3. Másoljuk át az új függvénytörzsbe az összes műveletvégző részt.
+4. Az eddigi műveletvégzés helyén hívjuk meg a *process_measurements* függvényt.
+5. Buildeljünk, teszteljük az egymásba ágyazott függvényeinket breakpointokkal.
