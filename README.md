@@ -68,3 +68,26 @@ Számoljuk ki az átlagot, adjuk össze a *distances* tömb elemeit és osszuk e
 3. Írjuk ki az eredményt a terminalba *printf* függvény segítségével.
 4. Buildeljünk!
 5. Próbáljuk ki a programot, vajon jó eredményt kapunk-e?
+
+## **3. Beérkező távolságmérések másolása, tárolása**
+
+**Használandó új nyelvi elemek:** %
+**%:** osztási maradékot visszaadó operátor. Amíg egész számok esetén a **/** operátor az eredmény egészrészét adja vissza, addig a **%** operátor annak törtrészét. Hasznos, ha pl. ciklikusan szeretnénk léptetni egy indexelő futó változót.
+
+### 3.1. Beérkező távolságmérések szimulációja
+
+Az egyszerűség kedvéért tegyünk csak annyit, hogy egy 4-nél nagyobb elemű tömböt kézzel létrehozunk, ez reprezentálja a külső méréseinket, majd ezt folymatosan átmásoljuk a 4 elem kapacitású *distances* tömbünkbe, úgy, hogy a legvégén a legutoljára érkezett 4 mérés legyen csak eltárolva.
+
+1. Hozzunk létre egy 6 elemű tömböt *measurements* néven, és inicializáljuk tetszőleges értékekkel.
+2. Definiáljunk egy *meas_size* változót a *measurements méretét reprezentálandó, a másolási ciklus számára.
+3. Másoljuk át sorban a measurements összes elemét egy ciklus segítségével a *distances* tömbbe. A túlindexelést elkerülendő és a régi elemek felülírását elősegítendő, használjuk a **%** operátoros trükköt a *distances* indexeléséhez. ***Figyelem!*** Ha azt mondjuk csak egyszerűen, hogy *distances=measurements;* akkor vlójában fizikailag tettük egyenlővá a kettőt, hisz a *measurements* tömb kezdő címét adtuk a *distance* tömb kezdőértékének. Jelen esetben nem ezt akarjuk.
+
+### 3.2 Folyamatos átlagszámítás minden másolás után
+
+Végezzük el az átlagszámítást minden egyes elem másolása után (mint ahogyan ez egy valós alkalmazásnál történne), tehát ha ciklusban másolunk, akkor az átlagszámításhoz használt programrész, a ciklusával együtt a másoló cikluson belül fog elhelyezkedni.
+Amí nem másoltunk át 4 elemet, az áltagszámításnak csak akkor van értelme, ha *distances* tömb elemeit kezdetben 0.0-kként inicializáltuk.
+
+1. A másoló cikluson belül, a másolási lépést követően, helyezzük át a teljes átlagszámító programrészt, a *printf* kiírással együtt.
+2. Adjunk új, csupa 0.0 kezdeti értéket a *distances* tömb összes elemének.
+3. Buildeljünk!
+4. Teszteljük a frissített programot, az átlagszámítás 6 eredményt kell hogy kiírjon sorban összesen a terminal ablakba.
