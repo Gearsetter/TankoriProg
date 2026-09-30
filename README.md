@@ -143,3 +143,29 @@ Helyezzük a távolságmérések másolását, feldolgozását is egy függvény
 4. Includeoljuk a *distance_processor.h* filet mind a *distance_processor.c*, mind a test.c fileokba, hiszen mindkettő használja a deklarációkat. (A mappastruktúra miatt használjuk az **\#include "../inc/distance_processor.h"** megoldást.)
 5. Egészítsük ki a *tasks.json*-ben a gcc argumentumokat a **"-I",** és a **"${workspaceFolder}/inc",** sorokkal, hogy a fordításhoz adjuk az include fájljaink elérési útvonalát.
 6. Buildeljünk, teszteljünk!
+
+## **6. Globális változó használata**
+
+**Használandó új nyelvi elemek:** globális változó, extern, static
+**globális változó:** ha függvényeken kívül deklarálunk egy változót egy fileban, akkor az a file minden tagja részére láthatóvá válik. Ha több fileban is szeretnénk használni, de simán include által egy másik fileba is átkerül a globális változó definíciója, több fordítás keletkezhet ugyanarra a változóra, ami hibát okoz. Ha azt akarjuk, hogy ezek közösítve legyenek, más módosítókat is kell alkalmazni.
+**extern:** ha egy változót extern-ként deklarálunk, azzal azt üzenjük a linkernek, hogy a változó ezen a néven már máshol létre lett hozva, és azt használja, ne akarja újra definiálni. Ezáltal hiba nélkül használhatjuk több fileban is ugyanazt a közös globális változót. Jellemző megoldás, hogy egy .c fileban definiáljuk a globális változót, a .h párjában létrehozunk egy extern deklarációt rá, és azzal includeoljuk a többi helyre.
+**static:** ha egy változót static-ként deklarálunk, akkor fizikailag nem a stack-ben kerül, hanem fix memória helyet kap. Ezért biztonsági okok miatt más fileok semmiképp nem érhetik el a static változót. Globális static változó privát marad az őt definiáló file számára. Ha függvényen belül definiálunk egy változót static-ként, akkor pedig a változó értéke nem resetelődik a függvény hívások közt. Az előzőekből következik, hogy .h fileban nem célszerű static változót létrehozni.
+
+### 6.1. *distances[]*, mint közös globális változó
+
+Mivel a *distance* tömb egy egyedi és folyton változó tömb, ahol fizikailag ugyanazt a memóriatartományt akarjuk updatelni mindig, ezért logikailag kézenfekvő, hogy erre egy állandó globális változót használjunk.
+
+1. A teljes *distances* tömb definíciót emeljük át a *test.c*-ből a *distance_processor.c*-be.
+2. A függvény inputok közül vegyük ki a *d* tömböket mindenhol, ahol előfordul, és a kitörölt input helyeire helyettesítsük be a *distances* globális változót a függvénytörzsekben.
+3. Deklaráljuk ugyanezt a változót *extern*-ként a *distance_processor.h* fileban.
+
+### 6.2. *dist_size*, mint privát változó
+
+A *dist_size* változót kizárólag a *distance_processor.c* fileon belül kell használnunk, és mivel egyéb érdekes információt nem közöl debugoláshoz sem, érdemes a *distance_processor.c*-ben static globális változóként létrehozni.
+
+1. A *dist_size* változó definícióját emeljük át a *distance_processor.c*-be globális static változóként definiálva.
+2. A függvény bemenetekből töröljük ki a *d_size* inputokat mindenhol, ahol csak előfordul.
+3. A függvénytörzsekben a d_size hivatkozásokat cseréljük ki az új *dist_size* globális változónkra.
+4. Buildeljünk, teszteljünk!
+5. Figyeljük meg, hogy ha a*main* függvénybe breakpointot szúrunk, onnan is láthatjuk a *distances* globális változót, ha hozzáadjuk a nevét a *Run and Debug* fül *Watch* részéhez. A *dist_size* globális változót viszont csak a *distance_processor* függvényeiben állva érjük el.
+6. Azt is észrevehetjük, hogy a *get_dist_avg* függvénynek így nincsen bemenete. Ez nem baj, ilyet is lehet, ekkor csak egy üres zárójelet írunk a függvény neve mögé.

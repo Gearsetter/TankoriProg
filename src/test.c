@@ -9,13 +9,8 @@ int main() {
     double measurements[6] = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0};
     int meas_size = 6;
     
-    // Méréseket tároló tömb (2. Feladat), reinit 0-vá (3. Feladat)
-    double distances[4] = {0.0, 0.0, 0.0, 0.0};
-    int dist_size = 4;
-    
     // Beérkező mérések feldolgozása, átlagszámítással (4. Feladat)
-    process_measurements(measurements, meas_size, distances, dist_size);
-
+    process_measurements(measurements, meas_size);
 
     // Loopban várakozás a program végén (1. Feladat)
     char terminate;

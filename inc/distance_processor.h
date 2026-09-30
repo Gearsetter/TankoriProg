@@ -1,7 +1,9 @@
 #ifndef DISTANCE_PROCESSOR_H
 #define DISTANCE_PROCESSOR_H
 
-double get_dist_avg(double d[], int d_size);
-void process_measurements(double m[], int m_size, double d[], int d_size);
+extern double distances[4]; // distances globális tömb (6. Feladat)
+
+double get_dist_avg();
+void process_measurements(double m[], int m_size);
 
 #endif // DISTANCE_PROCESSOR_H
