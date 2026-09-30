@@ -9,6 +9,9 @@
 				"-fdiagnostics-color=always",
 				"-g",
 				"${workspaceFolder}/src/test.c",
+				"${workspaceFolder}/src/distance_processor.c",
+				"-I",
+				"${workspaceFolder}/inc",
 				"-o",
 				"${fileDirname}\\${fileBasenameNoExtension}.exe"
 			],

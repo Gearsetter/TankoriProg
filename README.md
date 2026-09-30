@@ -120,3 +120,26 @@ Helyezzük a távolságmérések másolását, feldolgozását is egy függvény
 3. Másoljuk át az új függvénytörzsbe az összes műveletvégző részt.
 4. Az eddigi műveletvégzés helyén hívjuk meg a *process_measurements* függvényt.
 5. Buildeljünk, teszteljük az egymásba ágyazott függvényeinket breakpointokkal.
+
+## **5. Program több fileba szervezése**
+
+**Használandó új nyelvi elemek:** .h file, \#ifndef / \#endif,  \#define 
+**.h file:** header file, ami rendszerint leginkább változók és függvények deklarációját tartalmazza csak. Elősegíti a jól szervezett includeolást. Akár megtehetnénk azt is, hogy .c filet includeolunk egy másik .c fileba, ez legtöbbször azonban nem szerencsés, hiszen, ha ugyanazt a .c filet több helyre is includeoljuk, hibád dobhat a fordító, hogy több helyen tlált implementációt ugyanarra a függvényre. Ha .h fileokon keresztül includeolunk, akkor csupán arról biztosítjuk a fordítót, hogy létezni fog a függvény implementáció, ne aggódjon, és a valós implementációt majd a linker szoftver segít összerendelni, így az csak egyetlen helyen fog szerepelni, az eredeti .c fileban, ahol implementáltuk.
+**\#define:** makró változót definiálhatunk vele.
+**\#ifndef / \#endif** egy makró feltételes blokk kezdetét és zárását jelöli a két kulcsszó, feloldása *if not defined*. Ezt arra használjuk a .h fileban, hogy ha egymásba ágyazott includeolások miatt egy .c fileba egy .h többször is bekerülne, akkor azt megakadályozza. Létrehozunk egy tetszőleges makró kulcsot a **\#define** utasítással, de kizárólag csak egyszer és ehhez az egyszeri alkalomhoz kötjük a .h-ban szereplő deklarációk figyelembevételét.
+
+### 5.1. Függvények áthelyezése külön .c fileba
+
+1. Hozzunk létre egy új c. filet az src mappába, *distance_processor.c* néven.
+2. Másoljuk át bele a *get_dist_avg* és a *process_measurements* függvény implementációkat.
+3. Includeoljuk az *stdio.h*-t, mert az egyik függvényben printf-et is használunk.
+4. A *tasks.json*-ban a gcc argumentumoknál a test.c után adjuk hozzá az új fileunkat is, mint fordítandó source, egészítsük ki a *"${workspaceFolder}/src/distance_processor.c",* sorral.
+
+### 5.2 Header file létrehozása és használata
+
+1. Hozzunk létre a rott mappába egy *inc* mappát és abba egy *distance_processor.h* filet, ami kizárólag a *distance_processor.c*-ben implementált függvények fejlécét fogja tartalmazni.
+2. A makrós trükkel hozzunk létre egy ***\#ifndef-\#define-\#endif*** keretet
+3. Illesszük be a függvények fejlécét, pontos vesszővel a sor végén.
+4. Includeoljuk a *distance_processor.h* filet mind a *distance_processor.c*, mind a test.c fileokba, hiszen mindkettő használja a deklarációkat. (A mappastruktúra miatt használjuk az **\#include "../inc/distance_processor.h"** megoldást.)
+5. Egészítsük ki a *tasks.json*-ben a gcc argumentumokat a **"-I",** és a **"${workspaceFolder}/inc",** sorokkal, hogy a fordításhoz adjuk az include fájljaink elérési útvonalát.
+6. Buildeljünk, teszteljünk!
